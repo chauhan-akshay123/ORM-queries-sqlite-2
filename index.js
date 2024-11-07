@@ -8,28 +8,65 @@ app.use(express.json());
 app.use(cors());
 
 let postData = [
-	{
-	  id: 1,
-	  name: 'Post1',
-	  author: 'Author1',
-	  content: 'This is the content of post 1',
-	  title: 'Title1'
-	},
-	{
-    id: 2,
-    name: 'Post2',
-    author: 'Author2',
-    content: 'This is the content of post 2',
-    title: 'Title2'
-	},
-	{
-	  id: 3,
-	  name: 'Post3',
-	  author: 'Author1',
-	  content: 'This is the content of post 3',
-	  title: 'Title3'
-	}
-];
+    {
+      title: 'Getting Started with Node.js',
+      content:
+        'This post will guide you through the basics of Node.js and how to set up a Node.js project.',
+      author: 'Alice Smith',
+    },
+    {
+      title: 'Advanced Express.js Techniques',
+      content:
+        'Learn advanced techniques and best practices for building applications with Express.js.',
+      author: 'Bob Johnson',
+    },
+    {
+      title: 'ORM with Sequelize',
+      content:
+        'An introduction to using Sequelize as an ORM for Node.js applications.',
+      author: 'Charlie Brown',
+    },
+    {
+      title: 'Boost Your JavaScript Skills',
+      content:
+        'A collection of useful tips and tricks to improve your JavaScript programming.',
+      author: 'Dana White',
+    },
+    {
+      title: 'Designing RESTful Services',
+      content: 'Guidelines and best practices for designing RESTful APIs.',
+      author: 'Evan Davis',
+    },
+    {
+      title: 'Mastering Asynchronous JavaScript',
+      content:
+        'Understand the concepts and patterns for writing asynchronous code in JavaScript.',
+      author: 'Fiona Green',
+    },
+    {
+      title: 'Modern Front-end Technologies',
+      content:
+        'Explore the latest tools and frameworks for front-end development.',
+      author: 'George King',
+    },
+    {
+      title: 'Advanced CSS Layouts',
+      content:
+        'Learn how to create complex layouts using CSS Grid and Flexbox.',
+      author: 'Hannah Lewis',
+    },
+    {
+      title: 'Getting Started with React',
+      content: "A beginner's guide to building user interfaces with React.",
+      author: 'Ian Clark',
+    },
+    {
+      title: 'Writing Testable JavaScript Code',
+      content:
+        'An introduction to unit testing and test-driven development in JavaScript.',
+      author: 'Jane Miller',
+    },
+  ];
 
 // Defining a route to seed the database
 app.get("/seed_db", async (req, res) => {
@@ -128,6 +165,81 @@ app.get("/posts/sort/name", async (req, res) => {
    return res.status(200).json(result);
  } catch(error){
 	 res.status(500).json({ message: "Error sorting the posts", error: error.message });
+ }
+});
+
+// function to add a new popst in the database
+async function addNewPost(postData){
+    let newPost = await post.create(postData);
+
+    return { newPost };
+}
+
+// Endpoint to add a new post in the database
+app.post("/posts/new", async (req, res) => {
+ try{
+    let newPost = req.body.newPost;
+    let response = await addNewPost(newPost);
+    return res.status(200).json(response);
+ } catch(error){
+    res.status(500).json({ message: "Error adding new post", error: error.message });
+ }
+});
+
+// function to update post information
+async function updatePostById(updatePostData ,id){
+  let postDetails = await post.findOne({ where: { id } });
+  if(!postDetails){
+    return {};
+  }
+
+  postDetails.set(updatePostData);
+  let updatedPost = await postDetails.save();
+
+  return { message: "Track updated successfully.", updatedPost };
+}
+
+// Endpoint to update post information
+app.post("/posts/update/:id", async (req, res) => {
+ try{
+   let newPostData = req.body;
+   let id = parseInt(req.params.id);
+   let response = await updatePostById(newPostData, id);
+
+   if(!response.message){
+    return res.status(404).json({ message: "Post not found." });
+   }
+   
+   return res.status(200).json(response);
+ } catch(error){
+    res.status(500).json({ message: "Error updating the post", error: error.message });
+ }
+});
+
+// function to delete post from the database
+async function deletePostById(id){
+   let destroyedPost = await post.destroy({ where: { id } });
+   
+   if(destroyedPost === 0){
+    return {};
+   }
+   
+   return { message: "Post has been deleted successfully." };
+}
+
+// Endpoint to delete post from the database
+app.post("/posts/delete", async (req, res) => {
+ try{
+  let id = parseInt(req.body.id);
+  let response = await deletePostById(id);
+
+  if(!response.message){
+    return res.status(404).json({ message: "Post not found." });
+  }
+  
+  return res.status(200).json(response);
+ } catch(error){
+    res.status(500).json({ message: "Error deleting the post", error: error.message });
  }
 });
 
