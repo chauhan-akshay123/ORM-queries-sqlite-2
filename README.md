@@ -1,125 +1,125 @@
-# Post Management API
+# Blog Post API
 
-This is a simple Express-based API for managing posts, allowing you to seed the database with initial data, fetch all posts, get posts by specific criteria, and sort posts by name. This API uses Sequelize as the ORM and a SQLite database for data storage.
+This project is a simple RESTful API for managing blog posts using Node.js, Express, Sequelize, and SQLite. It provides endpoints for creating, retrieving, updating, and deleting blog posts and includes additional filtering options.
 
 ## Features
 
-- Seed the database with initial posts
-- Fetch all posts
-- Fetch post details by post ID
-- Fetch all posts by a specific author
-- Sort posts by name in ascending or descending order
+- **Database Seeding**: Populate the database with initial blog posts data.
+- **CRUD Operations**: Create, Read, Update, Delete blog posts.
+- **Filtering and Sorting**: Retrieve posts by author and sort posts by title.
+- **Express**: Lightweight server for handling requests.
+- **Sequelize**: ORM for managing database operations.
+- **SQLite**: Lightweight database for storing blog posts.
 
 ## Prerequisites
 
-- Node.js and npm installed on your system
-- SQLite or any SQL-compatible database (modify Sequelize configuration for other databases)
+- Node.js
+- npm (Node Package Manager)
+- SQLite (if not using the in-memory SQLite setup in Sequelize)
 
 ## Getting Started
 
-1. Clone the repository:
+1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/post-management-api.git
-   cd post-management-api
+   git clone <repository_url>
+   cd <repository_name>
    ```
 
-2. Install dependencies:
+2. **Install dependencies**:
    ```bash
    npm install
    ```
 
-3. Set up Sequelize configuration:
-   Ensure `sequelize` is configured properly in the `lib/index.js` file to connect to your preferred database. By default, SQLite is used.
-
-4. Start the server:
+3. **Start the server**:
    ```bash
    node app.js
    ```
-
-   The server will run on [http://localhost:3000](http://localhost:3000).
+   Server runs on `http://localhost:3000`.
 
 ## API Endpoints
 
-### 1. Seed the Database
+### Seed Database
 
 - **URL**: `/seed_db`
 - **Method**: `GET`
-- **Description**: Seeds the database with initial post data.
-- **Response**:
-  - `200 OK`: `{"message": "Database seeding successful."}`
-  - `500 Internal Server Error`: `{"message": "Error seeding the database", "error": "error message"}`
+- **Description**: Clears and seeds the database with initial data.
 
-### 2. Fetch All Posts
+### Retrieve All Posts
 
 - **URL**: `/posts`
 - **Method**: `GET`
-- **Description**: Fetches all posts in the database.
-- **Response**:
-  - `200 OK`: `{ "posts": [ ... ] }`
-  - `404 Not Found`: `{"message": "No posts found."}`
-  - `500 Internal Server Error`: `{"message": "Error fetching the posts", "error": "error message"}`
+- **Description**: Fetches all blog posts.
+- **Response**: List of all posts.
 
-### 3. Fetch Post by ID
+### Retrieve Post by ID
 
 - **URL**: `/posts/details/:id`
 - **Method**: `GET`
-- **Description**: Fetches a specific post by its ID.
-- **Response**:
-  - `200 OK`: `{ "post": { ... } }`
-  - `404 Not Found`: `{"error": "Post not found."}`
-  - `500 Internal Server Error`: `{"message": "Error fetching the post by ID", "error": "error message"}`
+- **Description**: Retrieves a specific post by its ID.
 
-### 4. Fetch Posts by Author
+### Retrieve Posts by Author
 
 - **URL**: `/posts/author/:author`
 - **Method**: `GET`
 - **Description**: Fetches all posts by a specific author.
-- **Response**:
-  - `200 OK`: `{ "posts": [ ... ] }`
-  - `404 Not Found`: `{"message": "Posts not found."}`
-  - `500 Internal Server Error`: `{"message": "Error fetching post by author", "error": "error message"}`
 
-### 5. Sort Posts by Name
+### Sort Posts by Title
 
 - **URL**: `/posts/sort/name`
 - **Method**: `GET`
-- **Description**: Sorts posts by their name in ascending or descending order.
-- **Query Parameter**: `order` (values: `ASC` for ascending, `DESC` for descending)
-- **Response**:
-  - `200 OK`: `{ "posts": [ ... ] }`
-  - `404 Not Found`: `{"message": "No post found."}`
-  - `500 Internal Server Error`: `{"message": "Error sorting the posts", "error": "error message"}`
+- **Query Parameter**: `order` (asc or desc)
+- **Description**: Sorts posts by title in ascending or descending order.
 
-## Example Usage
+### Create a New Post
 
-1. **Seed the Database**
-   ```bash
-   curl http://localhost:3000/seed_db
-   ```
+- **URL**: `/posts/new`
+- **Method**: `POST`
+- **Description**: Adds a new post to the database.
+- **Body**:
+  ```json
+  {
+    "newPost": {
+      "title": "Post Title",
+      "content": "Post content",
+      "author": "Author Name"
+    }
+  }
+  ```
 
-2. **Fetch All Posts**
-   ```bash
-   curl http://localhost:3000/posts
-   ```
+### Update a Post
 
-3. **Fetch Post by ID**
-   ```bash
-   curl http://localhost:3000/posts/details/1
-   ```
+- **URL**: `/posts/update/:id`
+- **Method**: `POST`
+- **Description**: Updates a post by its ID.
+- **Body**:
+  ```json
+  {
+    "title": "Updated Title",
+    "content": "Updated Content"
+  }
+  ```
 
-4. **Fetch Posts by Author**
-   ```bash
-   curl http://localhost:3000/posts/author/Author1
-   ```
+### Delete a Post
 
-5. **Sort Posts by Name (Descending)**
-   ```bash
-   curl "http://localhost:3000/posts/sort/name?order=DESC"
-   ```
+- **URL**: `/posts/delete`
+- **Method**: `POST`
+- **Description**: Deletes a post by its ID.
+- **Body**:
+  ```json
+  {
+    "id": postId
+  }
+  ```
 
-## Technologies Used
+## Error Handling
 
-- **Express** - For building the API
-- **Sequelize** - ORM for managing the database
-- **SQLite** - Default database (can be configured for other databases)
-- **Cors** - Enables cross-origin requests
+The API returns appropriate HTTP status codes and error messages for different scenarios, such as missing resources or invalid inputs.
+
+## Dependencies
+
+- `express`: Web server framework.
+- `cors`: Middleware for enabling CORS.
+- `sequelize`: ORM for database management.
+- `sqlite3`: Database used for local development.
+
+
